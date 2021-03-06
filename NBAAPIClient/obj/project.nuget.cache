@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "9ZzTtJGZ8e5G4rEUgEOGuSI2c89lwxqDXpg1lPic4ZeyOPjV4qihVHzx17FnEH/Ep8GnIeQKJ1+0YIoBFvs5bw==",
+  "success": true,
+  "projectFilePath": "/Users/harisqureshi/Desktop/NBA-Data/NBAAPIClient/NBAAPIClient.csproj",
+  "expectedPackageFiles": [
+    "/Users/harisqureshi/.nuget/packages/system.text.json/5.0.1/system.text.json.5.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
