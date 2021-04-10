@@ -3,13 +3,18 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Text.Json;
 
+
 namespace DataModels.BoxScore
 {
     public class BoxScore
-    {
-        //links
+    {   [JsonPropertyName("basicGameData")]
+        public BasicGameData basicGameData { get; set; }
+
         [JsonPropertyName("stats")]
         public Stats stats { get; set; }
+        
+         
+        
     }
     public class Stats
     {
@@ -17,6 +22,10 @@ namespace DataModels.BoxScore
         public Team vTeam{get; set;}
         [JsonPropertyName("hTeam")]
         public Team hTeam{get; set;}
+
+        [JsonPropertyName("activePlayers")]
+        public List<ActivePlayers> activePlayers{get; set;}
+        
     }
     public class Team 
     {
@@ -24,6 +33,10 @@ namespace DataModels.BoxScore
         public String triCode{get; set;}
         [JsonPropertyName("leaders")]
         public Leaders leaders{get; set;}
+
+        [JsonPropertyName("teamId")]
+        public String teamId{get; set;}
+        public List<ActivePlayers> top{get; set;}
     }
 
 
@@ -59,5 +72,48 @@ namespace DataModels.BoxScore
 
         [JsonPropertyName("lastName")]
         public String lastName{get; set;}
+    }
+
+    public class ActivePlayers
+    {
+        [JsonPropertyName("firstName")]
+        public String firstName {get; set;}
+
+        [JsonPropertyName("lastName")]
+        public String lastName{get; set;}
+
+        [JsonPropertyName("points")]
+        public String points{get; set;}
+
+        [JsonPropertyName("teamId")]
+        public String teamId{get; set;}
+        
+
+    }
+
+    public class FullTeam
+    {
+     
+        [JsonPropertyName("triCode")]
+        public String triCode{get; set;}
+
+        [JsonPropertyName("teamId")]
+        public String teamId{get; set;}
+
+        [JsonPropertyName("win")]
+        public String win{get; set;}
+        [JsonPropertyName("loss")]
+        public String loss{get; set;}
+        
+    
+
+    }
+    public class BasicGameData
+    {
+        [JsonPropertyName("vTeam")]
+        public FullTeam vTeam{get; set;}
+
+        [JsonPropertyName("hTeam")]
+        public FullTeam hTeam{get; set;}
     }
 }
