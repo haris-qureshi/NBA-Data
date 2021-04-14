@@ -88,7 +88,13 @@ namespace DataModels.BoxScore
         [JsonPropertyName("teamId")]
         public String teamId{get; set;}
         
-
+        public int getpoints()
+        {
+            if(Int32.TryParse(this.points, out int j))
+            return j;
+            
+            return 0;
+        }
     }
 
     public class FullTeam

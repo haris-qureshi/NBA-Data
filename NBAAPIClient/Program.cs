@@ -7,6 +7,7 @@ using System.Text.Json;
 using DataModels.ScoreBoard;
 using DataModels.MainPage;
 using DataModels.BoxScore;
+using DataModels.Standings;
 namespace NBAAPIClient
 {
     class Program
@@ -17,60 +18,112 @@ namespace NBAAPIClient
             var date = await GetCurrentDate();
             
             string result = DateTime.Today.AddDays(-1).ToString("yyyyMMdd");
+            string tomorrow = DateTime.Today.AddDays(+1).ToString("yyyyMMdd");
 
             //var ScoreBoard = await GetScoreBoard(date.links.currentDate.ToString());
             var ScoreBoard = await GetScoreBoard(result);
+            var standings = await GetStandings();
             List<BoxScore> boxScores = new List<BoxScore>();
             
 
 
-            Console.Write("Today's date is:");
-            Console.WriteLine(date.links.currentDate);
+
             Console.WriteLine("This many games were played "+result+" : "+ScoreBoard.numGames);
+            
             int i =0;
 
             foreach (var temp in ScoreBoard.games)
             {
-                Console.WriteLine(temp.gameId+" "+temp.hTeam.triCode+": "+temp.hTeam.score+" vs "+temp.vTeam.triCode+": "+temp.vTeam.score);
                 boxScores.Add(await GetBoxScore(result,temp.gameId.ToString()));
+                Console.WriteLine(temp.hTeam.triCode+": "+temp.hTeam.score+" vs "+temp.vTeam.triCode+": "+temp.vTeam.score);
                 boxScores[i].stats.hTeam.triCode = temp.hTeam.triCode;
                 boxScores[i].stats.vTeam.triCode = temp.vTeam.triCode;
                 i++;
-
-                
             }
-            Console.WriteLine();
-            
+
+
             foreach (var temp in boxScores)
             {   
-                Console.WriteLine(temp.stats.hTeam.triCode+": ");
-                Console.WriteLine("Points "+temp.stats.hTeam.leaders.points.players[0].firstName+" "+temp.stats.hTeam.leaders.points.players[0].lastName+":"+temp.stats.hTeam.leaders.points.value);
-                Console.WriteLine("Rebounds "+temp.stats.hTeam.leaders.rebounds.players[0].firstName+" "+temp.stats.hTeam.leaders.rebounds.players[0].lastName+":"+temp.stats.hTeam.leaders.rebounds.value);
-                Console.WriteLine("Assists "+temp.stats.hTeam.leaders.assists.players[0].firstName+" "+temp.stats.hTeam.leaders.assists.players[0].lastName+":"+temp.stats.hTeam.leaders.assists.value+"\n");
-                    foreach (var point in temp.stats.activePlayers)
-                    {  
-                        if(point.teamId.Equals(temp.basicGameData.hTeam.teamId))
-                        {
-                            Console.WriteLine(point.firstName+" "+point.lastName+" : "+point.points+" "+point.teamId);
-                        }
-                    }
-                
-                Console.WriteLine(temp.stats.vTeam.triCode+": ");
-                Console.WriteLine("Points "+temp.stats.vTeam.leaders.points.players[0].firstName+" "+temp.stats.vTeam.leaders.points.players[0].lastName+":"+temp.stats.vTeam.leaders.points.value);
-                Console.WriteLine("Rebounds "+temp.stats.vTeam.leaders.rebounds.players[0].firstName+" "+temp.stats.vTeam.leaders.rebounds.players[0].lastName+":"+temp.stats.vTeam.leaders.rebounds.value);
-                Console.WriteLine("Assists "+temp.stats.vTeam.leaders.assists.players[0].firstName+" "+temp.stats.vTeam.leaders.assists.players[0].lastName+":"+temp.stats.vTeam.leaders.assists.value+"\n");
+                Console.WriteLine("\n"+temp.stats.hTeam.triCode+": ");
+                Console.WriteLine("\tPoints: "+temp.stats.hTeam.leaders.points.players[0].firstName+" "+temp.stats.hTeam.leaders.points.players[0].lastName+":"+temp.stats.hTeam.leaders.points.value);
+                Console.WriteLine("\tRebounds: "+temp.stats.hTeam.leaders.rebounds.players[0].firstName+" "+temp.stats.hTeam.leaders.rebounds.players[0].lastName+":"+temp.stats.hTeam.leaders.rebounds.value);
+                Console.WriteLine("\tAssists: "+temp.stats.hTeam.leaders.assists.players[0].firstName+" "+temp.stats.hTeam.leaders.assists.players[0].lastName+":"+temp.stats.hTeam.leaders.assists.value+"\n");
+                Console.WriteLine();
+                    
+                Boolean flag = true;
+                if(flag)
+                {
+                    GFG gg = new GFG();
+                    temp.stats.activePlayers.Sort(gg);
+                    flag = false;
+                }
+                i =0;
                 foreach (var point in temp.stats.activePlayers)
-                    {
-                        if(point.teamId.Equals(temp.basicGameData.vTeam.teamId))
+                {
+                    if(point.teamId.Equals(temp.basicGameData.hTeam.teamId))
                         {
-                            Console.WriteLine(point.firstName+" "+point.lastName+" : "+point.points);
+                            if (point.getpoints() >= 10)
+                            Console.WriteLine(++i+") "+point.firstName+" "+point.lastName+" : "+point.points); 
+                        }
+                }
+                
+                Console.WriteLine("\n"+temp.stats.vTeam.triCode+": ");
+                Console.WriteLine("\tPoints: "+temp.stats.vTeam.leaders.points.players[0].firstName+" "+temp.stats.vTeam.leaders.points.players[0].lastName+":"+temp.stats.vTeam.leaders.points.value);
+                Console.WriteLine("\tRebounds: "+temp.stats.vTeam.leaders.rebounds.players[0].firstName+" "+temp.stats.vTeam.leaders.rebounds.players[0].lastName+":"+temp.stats.vTeam.leaders.rebounds.value);
+                Console.WriteLine("\tAssists: "+temp.stats.vTeam.leaders.assists.players[0].firstName+" "+temp.stats.vTeam.leaders.assists.players[0].lastName+":"+temp.stats.vTeam.leaders.assists.value+"\n");
+               
+                    
+                Console.WriteLine();
+                    i =0;
+                    foreach (var point in temp.stats.activePlayers)
+                    { 
+                        if(point.teamId.Equals(temp.basicGameData.vTeam.teamId))
+                        {   
+                            if (point.getpoints() >= 10)
+                            {
+                                i++;
+                                Console.WriteLine( i+") "+point.firstName+" "+point.lastName+" : "+point.points);
+                            }
                         }
                     }
-                    Console.WriteLine();
             }
             
+            //this is for tomorrows games schedule
+            var nextday = await GetScoreBoard(tomorrow);
+            Console.WriteLine("\nThis are tomorrows games "+tomorrow+" : "+nextday.numGames);
+            i =0;
+            foreach (var temp in nextday.games)
+            {   
+                boxScores.Add(await GetBoxScore(tomorrow,temp.gameId.ToString()));
+                string shit = $@"{i+1}) {boxScores[i].basicGameData.hTeam.triCode} vs {boxScores[i].basicGameData.vTeam.triCode}
+                ";
+                Console.WriteLine(shit);
+                i++;
+            }
+
+            Console.WriteLine();
+
+
+           int k=0;
+            Console.WriteLine($@"
+Standing    Team        win-loss");
+            foreach (var team in standings.league.standard.teams)
+            {
+                string shit= $@"
+{++k}) {team.confRank}  {team.teamSitesOnly.teamName} {team.teamSitesOnly.teamNickname}     {team.win} - {team.loss}";
+            Console.WriteLine(shit);
+            }
+
 
         }
+
+
+
+
+
+
+
+
         private static async Task<ScoreBoard> GetScoreBoard(string date)
         {
             client.DefaultRequestHeaders.Accept.Clear();
@@ -109,5 +162,37 @@ namespace NBAAPIClient
             BoxScore mainPage = await JsonSerializer.DeserializeAsync<BoxScore>(await streamTask);
             return mainPage;
         }
+
+        private static async Task<Standings> GetStandings()
+        {
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+            client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+            string url = String.Format("http://data.nba.net/prod/v1/current/standings_all.json");
+            //string url = "http://data.nba.net/10s/prod/v1/20210304/0022000552_boxscore.json";
+            var streamTask = client.GetStreamAsync(url);
+            
+            Standings mainPage = await JsonSerializer.DeserializeAsync<Standings>(await streamTask);
+            return mainPage;
+        }
+
+
+
     }
+
+    class GFG : IComparer<ActivePlayers>
+{
+    public int Compare(ActivePlayers x, ActivePlayers y)
+    {
+        if (x == null || y == null)
+        {
+            return 0;
+        }
+          
+        // "CompareTo()" method
+        return y.getpoints().CompareTo(x.getpoints());
+          
+    }
+}
 }
