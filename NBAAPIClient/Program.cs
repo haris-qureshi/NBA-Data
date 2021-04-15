@@ -19,13 +19,16 @@ namespace NBAAPIClient
             
             string result = DateTime.Today.AddDays(-1).ToString("yyyyMMdd");
             string tomorrow = DateTime.Today.AddDays(+1).ToString("yyyyMMdd");
+            string today = DateTime.Today.ToString("yyyyMMdd");
+
 
             //var ScoreBoard = await GetScoreBoard(date.links.currentDate.ToString());
             var ScoreBoard = await GetScoreBoard(result);
             var standings = await GetStandings();
             List<BoxScore> boxScores = new List<BoxScore>();
             
-
+            await Whose_playing(today);
+            Console.WriteLine();
 
 
             Console.WriteLine("This many games were played "+result+" : "+ScoreBoard.numGames);
@@ -45,10 +48,10 @@ namespace NBAAPIClient
             foreach (var temp in boxScores)
             {   
                 Console.WriteLine("\n"+temp.stats.hTeam.triCode+": ");
-                Console.WriteLine("\tPoints: "+temp.stats.hTeam.leaders.points.players[0].firstName+" "+temp.stats.hTeam.leaders.points.players[0].lastName+":"+temp.stats.hTeam.leaders.points.value);
-                Console.WriteLine("\tRebounds: "+temp.stats.hTeam.leaders.rebounds.players[0].firstName+" "+temp.stats.hTeam.leaders.rebounds.players[0].lastName+":"+temp.stats.hTeam.leaders.rebounds.value);
-                Console.WriteLine("\tAssists: "+temp.stats.hTeam.leaders.assists.players[0].firstName+" "+temp.stats.hTeam.leaders.assists.players[0].lastName+":"+temp.stats.hTeam.leaders.assists.value+"\n");
-                Console.WriteLine();
+                //Console.WriteLine("\tPoints: "+temp.stats.hTeam.leaders.points.players[0].firstName+" "+temp.stats.hTeam.leaders.points.players[0].lastName+":"+temp.stats.hTeam.leaders.points.value);
+                //Console.WriteLine("\tRebounds: "+temp.stats.hTeam.leaders.rebounds.players[0].firstName+" "+temp.stats.hTeam.leaders.rebounds.players[0].lastName+":"+temp.stats.hTeam.leaders.rebounds.value);
+                //Console.WriteLine("\tAssists: "+temp.stats.hTeam.leaders.assists.players[0].firstName+" "+temp.stats.hTeam.leaders.assists.players[0].lastName+":"+temp.stats.hTeam.leaders.assists.value+"\n");
+                //Console.WriteLine();
                     
                 Boolean flag = true;
                 if(flag)
@@ -88,21 +91,8 @@ namespace NBAAPIClient
                     }
             }
             
-            //this is for tomorrows games schedule
-            var nextday = await GetScoreBoard(tomorrow);
-            Console.WriteLine("\nThis are tomorrows games "+tomorrow+" : "+nextday.numGames);
-            i =0;
-            foreach (var temp in nextday.games)
-            {   
-                boxScores.Add(await GetBoxScore(tomorrow,temp.gameId.ToString()));
-                string shit = $@"{i+1}) {boxScores[i].basicGameData.hTeam.triCode} vs {boxScores[i].basicGameData.vTeam.triCode}
-                ";
-                Console.WriteLine(shit);
-                i++;
-            }
-
-            Console.WriteLine();
-
+            await Whose_playing(tomorrow);
+            
 
            int k=0;
             Console.WriteLine($@"
@@ -176,7 +166,28 @@ Standing    Team        win-loss");
             Standings mainPage = await JsonSerializer.DeserializeAsync<Standings>(await streamTask);
             return mainPage;
         }
+        private static async Task Whose_playing(string tomorrow)
+        {
 
+            //this is for tomorrows games schedule
+            var nextday = await GetScoreBoard(tomorrow);
+            List<BoxScore> boxScores = new List<BoxScore>();
+            Console.WriteLine("\nThis are games for date "+tomorrow+" : "+nextday.numGames);
+            int i =0;
+            foreach (var temp in nextday.games)
+            {   
+                boxScores.Add(await GetBoxScore(tomorrow,temp.gameId.ToString()));
+                string shit = $@"{i+1}) {boxScores[i].basicGameData.hTeam.triCode} vs {boxScores[i].basicGameData.vTeam.triCode}
+                ";
+                Console.WriteLine(shit);
+                i++;
+            }
+
+            Console.WriteLine();
+
+
+
+        }
 
 
     }
