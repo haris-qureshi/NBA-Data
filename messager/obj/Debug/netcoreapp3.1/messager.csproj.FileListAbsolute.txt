@@ -1,0 +1,12 @@
+/Users/harisqureshi/Desktop/NBA-Data/messager/bin/Debug/netcoreapp3.1/messager.deps.json
+/Users/harisqureshi/Desktop/NBA-Data/messager/bin/Debug/netcoreapp3.1/messager.runtimeconfig.json
+/Users/harisqureshi/Desktop/NBA-Data/messager/bin/Debug/netcoreapp3.1/messager.runtimeconfig.dev.json
+/Users/harisqureshi/Desktop/NBA-Data/messager/bin/Debug/netcoreapp3.1/messager.dll
+/Users/harisqureshi/Desktop/NBA-Data/messager/bin/Debug/netcoreapp3.1/messager.pdb
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.csprojAssemblyReference.cache
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.AssemblyInfoInputs.cache
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.AssemblyInfo.cs
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.csproj.CoreCompileInputs.cache
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.dll
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.pdb
+/Users/harisqureshi/Desktop/NBA-Data/messager/obj/Debug/netcoreapp3.1/messager.genruntimeconfig.cache
