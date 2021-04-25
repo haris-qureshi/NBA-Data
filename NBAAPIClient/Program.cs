@@ -21,6 +21,7 @@ namespace NBAAPIClient
             string today = DateTime.Today.ToString("yyyyMMdd");
             var ScoreBoard = await GetScoreBoard(result);
             var standings = await GetStandings();
+            String msg;
             
             foreach(var arg in args)
             {
